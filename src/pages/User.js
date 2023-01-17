@@ -29,19 +29,39 @@ const User = () => {
   const handleClose = () => setShow(false);
   // const handleShow = (id) => setShow(id);
 
-  const handleShow = (id) => { 
-    const selectedUser = user.find((item) => item.id === id)
+  const handleShow = (id) => {
+    const selectedUser = user.find((item) => item.id === id);
     console.log(selectedUser);
     setTitleEdit(selectedUser.title);
     setFirstNameEdit(selectedUser.firstName);
     setLastNameEdit(selectedUser.lastName);
     setEmailEdit(selectedUser.email);
     setPictureEdit(selectedUser.picture);
-    setShow(true);
-  }
+    setShow(id);
+  };
 
   // Get All User
   const [user, setUser] = useState();
+
+  // Delete Modal
+  const [deleteId, setDeleteId] = useState("");
+  const [deleteShow, setDeleteShow] = useState(false);
+  const handleDeleteClose = () => {
+    setDeleteShow(false);
+  };
+
+  const handleClickDelete = (id) => {
+    setDeleteId(id);
+    setDeleteShow(true);
+  };
+
+  const handleDeleteItem = () => {
+    setUser((pre) => {
+      const newArray = [...pre];
+      return newArray.filter((item) => item._id !== deleteId);
+    });
+    setDeleteShow(false);
+  };
 
   // Alert
   const successAddedNotify = () => {
@@ -50,8 +70,8 @@ const User = () => {
       autoClose: 5000,
       theme: "light",
     });
-  }
-  
+  };
+
   const errorAddedNotify = () => {
     toast.danger("Error during add user", {
       position: "top-right",
@@ -264,7 +284,7 @@ const User = () => {
                           <button
                             type="button"
                             className="btn btn-danger"
-                            onClick={() => handleDelete(item.id)}
+                            onClick={() => handleClickDelete(item.id)}
                           >
                             Delete
                           </button>
@@ -276,9 +296,7 @@ const User = () => {
             </tbody>
           </table>
 
-          <ToastContainer
-            transition={Slide}
-          />
+          <ToastContainer transition={Slide} />
 
           {/* Create */}
           <Modal show={add} onHide={addClose}>
@@ -421,6 +439,28 @@ const User = () => {
                 Save Changes
               </Button>
             </Modal.Footer>
+          </Modal>
+
+          {/* Modal Delete */}
+          <Modal
+            centered
+            show={deleteShow}
+            onHide={handleDeleteClose}
+            animation={true}
+          >
+            <Modal.Body>
+              <p className="fs-6 text-center">
+                Are you sure want to delete this item?
+              </p>
+              <div className="d-flex justify-content-center gap-3">
+                <Button variant="secondary" onClick={handleDeleteClose}>
+                  No
+                </Button>
+                <Button variant="danger" onClick={handleDeleteItem}>
+                  Yes
+                </Button>
+              </div>
+            </Modal.Body>
           </Modal>
         </div>
       </section>

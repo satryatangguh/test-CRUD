@@ -41,14 +41,14 @@ const Home = () => {
   const handleSearch = () => {
     axios({
       method: "get",
-      url: `https://dummyapi.io/data/v1/user/${searchTag}/post`,
+      url: `https://dummyapi.io/data/v1/tag/${searchTag}/post`,
       headers: {
         "app-id": "62996cb2689bf0731cb00285",
       },
     })
       .then((response) => {
-        console.log(response);
-        setPost(response);
+        console.log(response.data.data);
+        setPost(response.data.data);
       })
       .catch((error) => {
         console.log(error);

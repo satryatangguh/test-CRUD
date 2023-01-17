@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Form, Modal, Button } from "react-bootstrap";
 import { ToastContainer, toast, Slide } from "react-toastify";
 import { FaImage } from "react-icons/fa";
-import "../App.css"
+import "../App.css";
 
 const Post = () => {
   // Create Post
@@ -35,11 +35,31 @@ const Post = () => {
     setImageEdit(selectedPost.image);
     setTagsEdit(selectedPost.tags);
     setLikesEdit(selectedPost.likes);
-    setShow(true);
+    setShow(id);
   };
 
   // Get All post
   const [post, setPost] = useState();
+
+  // Delete Modal
+  const [deleteId, setDeleteId] = useState("");
+  const [deleteShow, setDeleteShow] = useState(false);
+  const handleDeleteClose = () => {
+    setDeleteShow(false);
+  };
+
+  const handleClickDelete = (id) => {
+    setDeleteId(id);
+    setDeleteShow(true);
+  };
+
+  const handleDeleteItem = () => {
+    setPost(pre => {
+      const newArray = [...pre]
+      return newArray.filter(item => item._id !== deleteId)
+    })
+    setDeleteShow(false)
+  }
 
   // Alert
   const successAddedNotify = () => {
@@ -124,7 +144,7 @@ const Post = () => {
         owner: owner,
         image: image,
         likes: likes,
-        tags: tags.split(", "),
+        tags: tags.split(","),
       },
     })
       .then((response) => {
@@ -156,7 +176,7 @@ const Post = () => {
         owner: ownerEdit,
         image: imageEdit,
         likes: likesEdit,
-        tags: tagsEdit,
+        tags: tagsEdit.split(","),
       },
     })
       .then((response) => {
@@ -166,7 +186,7 @@ const Post = () => {
         setOwnerEdit("");
         setImageEdit("");
         setLikesEdit("");
-        setTagsEdit([]);
+        setTagsEdit("");
         successEditNotify();
         getPost();
       })
@@ -177,24 +197,23 @@ const Post = () => {
   };
 
   const handleDelete = (id) => {
-    if (window.confirm("Are you sure want to delete this data?")) {
-      axios({
-        method: "delete",
-        url: `https://dummyapi.io/data/v1/post/${id}`,
-        headers: {
-          "app-id": "62996cb2689bf0731cb00285",
-        },
+    axios({
+      method: "delete",
+      url: `https://dummyapi.io/data/v1/post/${id}`,
+      headers: {
+        "app-id": "62996cb2689bf0731cb00285",
+      },
+    })
+      .then((response) => {
+        console.log(response);
+        handleDeleteClose();
+        successDeleteNotify();
+        getPost();
       })
-        .then((response) => {
-          console.log(response);
-          successDeleteNotify();
-          getPost();
-        })
-        .catch((error) => {
-          console.log(error);
-          errorDeleteNotify();
-        });
-    }
+      .catch((error) => {
+        console.log(error);
+        errorDeleteNotify();
+      });
   };
 
   return (
@@ -290,7 +309,7 @@ const Post = () => {
                           <button
                             type="button"
                             className="btn btn-danger"
-                            onClick={() => handleDelete(item.id)}
+                            onClick={() => handleClickDelete(item.id)}
                           >
                             Delete
                           </button>
@@ -301,8 +320,6 @@ const Post = () => {
                 })}
             </tbody>
           </table>
-
-          <ToastContainer transition={Slide} />
 
           {/* Create */}
           <Modal show={add} onHide={addClose}>
@@ -456,10 +473,37 @@ const Post = () => {
               </Button>
             </Modal.Footer>
           </Modal>
+
+          {/* Modal Delete */}
+          <Modal
+            centered
+            show={deleteShow}
+            onHide={handleDeleteClose}
+            animation={true}
+          >
+            <Modal.Body>
+              <p className="fs-6 text-center">
+                Are you sure want to delete this item?
+              </p>
+              <div className="d-flex justify-content-center gap-3">
+                <Button variant="secondary" onClick={handleDeleteClose}>
+                  No
+                </Button>
+                <Button
+                  variant="danger"
+                  onClick={handleDeleteItem}
+                >
+                  Yes
+                </Button>
+              </div>
+            </Modal.Body>
+          </Modal>
+
+          <ToastContainer transition={Slide} />
         </div>
       </section>
     </React.Fragment>
   );
-}
+};
 
 export default Post;
