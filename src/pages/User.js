@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Form, Modal, Button } from "react-bootstrap";
-import { FaImage } from "react-icons/fa"
+import { FaImage } from "react-icons/fa";
 import { ToastContainer, toast, Slide } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import "../App.css"
+import "../App.css";
 
 const User = () => {
   // Create User
@@ -126,6 +126,7 @@ const User = () => {
         "app-id": "62996cb2689bf0731cb00285",
       },
       data: {
+        id: id,
         title: title,
         firstName: firstName,
         lastName: lastName,
@@ -181,24 +182,22 @@ const User = () => {
   };
 
   const handleDelete = (id) => {
-    if (window.confirm("Are you sure want to delete this data?")) {
-      axios({
-        method: "delete",
-        url: `https://dummyapi.io/data/v1/user/${id}`,
-        headers: {
-          "app-id": "62996cb2689bf0731cb00285",
-        },
+    axios({
+      method: "delete",
+      url: `https://dummyapi.io/data/v1/user/${id}`,
+      headers: {
+        "app-id": "62996cb2689bf0731cb00285",
+      },
+    })
+      .then((response) => {
+        console.log(response);
+        successDeleteNotify();
+        getUser();
       })
-        .then((response) => {
-          console.log(response);
-          successDeleteNotify();
-          getUser();
-        })
-        .catch((error) => {
-          console.log(error);
-          errorDeleteNotify();
-        });
-    }
+      .catch((error) => {
+        console.log(error);
+        errorDeleteNotify();
+      });
   };
 
   return (
@@ -456,9 +455,11 @@ const User = () => {
                 <Button variant="secondary" onClick={handleDeleteClose}>
                   No
                 </Button>
-                <Button variant="danger" onClick={handleDeleteItem}>
-                  Yes
-                </Button>
+                <Button
+                  variant="danger"
+                  onClick={handleDeleteItem}
+                  // onClick={() => handleDelete(user && user.id)}
+                >Yes</Button>
               </div>
             </Modal.Body>
           </Modal>

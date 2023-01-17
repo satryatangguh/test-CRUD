@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Form, Button } from "react-bootstrap";
 import { FaSearch } from "react-icons/fa";
-import ReactPaginate from "react-paginate";
 import "../App.css"
 import imageError from "../assets/ImageError.jpg"
 
@@ -11,8 +10,7 @@ const Home = () => {
   const onImageError = (e) => {
     e.target.src = imageError;
   };
-
-
+  
   // Search
   const [searchTag, setSearchTag] = useState("");
   const [post, setPost] = useState([]);
