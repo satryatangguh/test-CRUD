@@ -53,14 +53,6 @@ const Post = () => {
     setDeleteShow(true);
   };
 
-  const handleDeleteItem = () => {
-    setPost(pre => {
-      const newArray = [...pre]
-      return newArray.filter(item => item._id !== deleteId)
-    })
-    setDeleteShow(false)
-  }
-
   // Alert
   const successAddedNotify = () => {
     toast.success("Successfully added new post", {
@@ -196,18 +188,18 @@ const Post = () => {
       });
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = () => {
     axios({
       method: "delete",
-      url: `https://dummyapi.io/data/v1/post/${id}`,
+      url: `https://dummyapi.io/data/v1/post/${deleteId}`,
       headers: {
         "app-id": "62996cb2689bf0731cb00285",
       },
     })
       .then((response) => {
         console.log(response);
-        handleDeleteClose();
         successDeleteNotify();
+        setDeleteShow(false)
         getPost();
       })
       .catch((error) => {
@@ -346,7 +338,7 @@ const Post = () => {
                   </Form.Select>
                 </Form.Group>
                 <Form.Group className="mb-3">
-                  <Form.Control
+                <Form.Control
                     type="text"
                     placeholder="text"
                     name="text"
@@ -491,7 +483,7 @@ const Post = () => {
                 </Button>
                 <Button
                   variant="danger"
-                  onClick={handleDeleteItem}
+                  onClick={handleDelete}
                 >
                   Yes
                 </Button>

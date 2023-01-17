@@ -44,7 +44,7 @@ const User = () => {
   const [user, setUser] = useState();
 
   // Delete Modal
-  const [deleteId, setDeleteId] = useState("");
+  const [deleteId, setDeleteId] = useState();
   const [deleteShow, setDeleteShow] = useState(false);
   const handleDeleteClose = () => {
     setDeleteShow(false);
@@ -54,15 +54,7 @@ const User = () => {
     setDeleteId(id);
     setDeleteShow(true);
   };
-
-  const handleDeleteItem = () => {
-    setUser((pre) => {
-      const newArray = [...pre];
-      return newArray.filter((item) => item._id !== deleteId);
-    });
-    setDeleteShow(false);
-  };
-
+  
   // Alert
   const successAddedNotify = () => {
     toast.success("Successfully added new user", {
@@ -126,7 +118,6 @@ const User = () => {
         "app-id": "62996cb2689bf0731cb00285",
       },
       data: {
-        id: id,
         title: title,
         firstName: firstName,
         lastName: lastName,
@@ -181,10 +172,10 @@ const User = () => {
       });
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = () => {
     axios({
       method: "delete",
-      url: `https://dummyapi.io/data/v1/user/${id}`,
+      url: `https://dummyapi.io/data/v1/user/${deleteId}`,
       headers: {
         "app-id": "62996cb2689bf0731cb00285",
       },
@@ -192,6 +183,7 @@ const User = () => {
       .then((response) => {
         console.log(response);
         successDeleteNotify();
+        setDeleteShow(false);
         getUser();
       })
       .catch((error) => {
@@ -457,7 +449,7 @@ const User = () => {
                 </Button>
                 <Button
                   variant="danger"
-                  onClick={handleDeleteItem}
+                  onClick={handleDelete}
                   // onClick={() => handleDelete(user && user.id)}
                 >Yes</Button>
               </div>
